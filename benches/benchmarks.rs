@@ -27,44 +27,82 @@ fn get_transaction_trytes() -> &'static [u8] {
     TRANSACTION.as_bytes()
 }
 
-// `ascii_strings` benchmarks
-fn ascii_strings_module_benchmarks(c: &mut Criterion) {
+// Helper function to get some transaction trits.
+fn get_transaction_trits() -> Vec<i8> {
+    bee_conv::trits::from_trytes(&TRANSACTION.as_bytes())
+}
+
+fn ascii_strings_from_tryte_str_benchmarks(c: &mut Criterion) {
+    // 2187 trytes
+    c.bench_function("ascii_string::from_trytes (2187)", move |b| {
+        b.iter(|| bee_conv::ascii_strings::from_tryte_str(&get_repeated_tryte_str(243)))
+    });
+    // 729 trytes
+    c.bench_function("ascii_string::from_trytes (729)", move |b| {
+        b.iter(|| bee_conv::ascii_strings::from_tryte_str(&get_repeated_tryte_str(81)))
+    });
+    // 243 trytes
     c.bench_function("ascii_string::from_trytes (243)", move |b| {
-        b.iter(|| bench_ascii_from_tryte_str(&get_repeated_tryte_str(243)))
-    });
-    c.bench_function("ascii_string::from_trytes (81)", move |b| {
-        b.iter(|| bench_ascii_from_tryte_str(&get_repeated_tryte_str(81)))
-    });
-    c.bench_function("ascii_string::from_trytes (27)", move |b| {
-        b.iter(|| bench_ascii_from_tryte_str(&get_repeated_tryte_str(27)))
+        b.iter(|| bee_conv::ascii_strings::from_tryte_str(&get_repeated_tryte_str(27)))
     });
 }
 
-// `bytes` benchmarks
-fn bytes_module_benchmarks(c: &mut Criterion) {
-    c.bench_function("bytes::from_trytes", move |b| {
-        b.iter(|| bench_bytes_from_trytes(&get_transaction_trytes()))
-    });
+fn bytes_from_trytes_benchmarks(c: &mut Criterion) {
     c.bench_function("bytes::from_trytes_all", move |b| {
-        b.iter(|| bench_bytes_from_trytes_all(&get_transaction_trytes()))
+        b.iter(|| bee_conv::bytes::from_trytes_all(&get_transaction_trytes()))
+    });
+    c.bench_function("bytes::from_trytes_sig", move |b| {
+        b.iter(|| bee_conv::bytes::from_trytes_sig(&get_transaction_trytes()[0..2187]))
+    });
+    c.bench_function("bytes::from_trytes_81", move |b| {
+        b.iter(|| bee_conv::bytes::from_trytes_81(&get_transaction_trytes()[2187..2268]))
+    });
+    c.bench_function("bytes::from_trytes_27", move |b| {
+        b.iter(|| bee_conv::bytes::from_trytes_27(&get_transaction_trytes()[2349..2376]))
+    });
+    c.bench_function("bytes::from_trytes_9", move |b| {
+        b.iter(|| bee_conv::bytes::from_trytes_9(&get_transaction_trytes()[2376..2385]))
+    });
+    c.bench_function("bytes::from_trytes", move |b| {
+        b.iter(|| bee_conv::bytes::from_trytes(&get_transaction_trytes()))
     });
 }
 
-fn bench_ascii_from_tryte_str(tryte_str: &str) {
-    bee_conv::ascii_strings::from_tryte_str(tryte_str);
+fn bytes_from_trits_benchmarks(c: &mut Criterion) {
+    c.bench_function("bytes::from_trits_all", move |b| {
+        b.iter(|| bee_conv::bytes::from_trits_all(&get_transaction_trits()))
+    });
+    c.bench_function("bytes::from_trits_sig", move |b| {
+        b.iter(|| bee_conv::bytes::from_trits_sig(&get_transaction_trits()[0..6561]))
+    });
+    c.bench_function("bytes::from_trits_243", move |b| {
+        b.iter(|| bee_conv::bytes::from_trits_243(&get_transaction_trits()[6561..6804]))
+    });
+    c.bench_function("bytes::from_trits_81", move |b| {
+        b.iter(|| bee_conv::bytes::from_trits_81(&get_transaction_trits()[7047..7128]))
+    });
+    c.bench_function("bytes::from_trits_27", move |b| {
+        b.iter(|| bee_conv::bytes::from_trits_27(&get_transaction_trits()[7857..7884]))
+    });
+    c.bench_function("bytes::from_trits", move |b| {
+        b.iter(|| bee_conv::bytes::from_trits(&get_transaction_trits()))
+    });
 }
 
-fn bench_bytes_from_trytes(trytes: &[u8]) {
-    bee_conv::bytes::from_trytes(trytes);
-}
-
-fn bench_bytes_from_trytes_all(trytes: &[u8]) {
-    bee_conv::bytes::from_trytes_all(trytes);
+fn numbers_from_trytes_benchmarks(c: &mut Criterion) {
+    c.bench_function("numbers::from_trytes_max11", move |b| {
+        b.iter(|| bee_conv::numbers::from_trytes_max11(&get_transaction_trytes()[2349..2360]))
+    });
+    c.bench_function("numbers::from_trytes_max13", move |b| {
+        b.iter(|| bee_conv::numbers::from_trytes_max13(&get_transaction_trytes()[2349..2362]))
+    });
 }
 
 criterion_group!(
     benches,
-    //ascii_strings_module_benchmarks,
-    bytes_module_benchmarks,
+    //ascii_strings_from_tryte_str_benchmarks,
+    //bytes_from_trytes_benchmarks,
+    //bytes_from_trits_benchmarks,
+    numbers_from_trytes_benchmarks,
 );
 criterion_main!(benches);

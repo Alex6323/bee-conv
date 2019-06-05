@@ -30,7 +30,6 @@ pub(crate) mod std {
 
 mod constants;
 mod luts;
-mod types;
 mod util;
 
 pub mod ascii_strings;
@@ -39,3 +38,4 @@ pub mod numbers;
 pub mod trits;
 pub mod tryte_strings;
 pub mod trytes;
+pub mod types;
