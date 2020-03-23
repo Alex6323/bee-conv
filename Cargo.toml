@@ -1,18 +1,17 @@
 [package]
-name = "bee-conv"
+name = "trinary"
 version = "0.1.0"
 authors = ["Alex6323 <Al3k5@protonmail.com>"]
 edition = "2018"
 
-keywords = ["IOTA", "Bee", "P2P"]
+keywords = ["trinary", "ternary"]
 categories = ["no-std"]
 #license = "MIT"
 repository = "https://github.com/iotaledger/bee"
 homepage = "https://iota.org"
 readme = "README.md"
 description = """
-A sub-crate for the trinary based IOTA Bee node software for converting 
-between trits, trytes, bytes, ascii, and integers.
+A sub-crate for converting between trits, trytes, bytes, ascii, and integers.
 """
 
 [features]
